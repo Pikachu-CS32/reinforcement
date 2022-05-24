@@ -11,10 +11,10 @@ module.exports = function(_env, argv) {
 
   return {
     devtool: isDevelopment && "cheap-module-source-map",
-    entry: "./client/index.js",
+    entry: "./src/index.js",
     output: {
       path: path.resolve(__dirname, "dist"),
-      filename: "./client/assets/js/[name].[contenthash:8].js",
+      filename: "./src/client/assets/js/[name].[contenthash:8].js",
       publicPath: "/",
     },
     node: false,
@@ -63,8 +63,8 @@ module.exports = function(_env, argv) {
     plugins: [
       isProduction &&
         new MiniCssExtractPlugin({
-          filename: "./client/assets/css/[name].[contenthash:8].css",
-          chunkFilename: "./client/assets/css/[name].[contenthash:8].chunk.css"
+          filename: "./src/app/assets/css/[name].[contenthash:8].css",
+          chunkFilename: "./src/app/assets/css/[name].[contenthash:8].chunk.css"
         }),
       new webpack.DefinePlugin({
         "process.env.NODE_ENV": JSON.stringify(
@@ -72,7 +72,7 @@ module.exports = function(_env, argv) {
         )
       }),
         new HtmlWebpackPlugin({
-          template: path.resolve(__dirname, "client/assets/html/index.html"),
+          template: path.resolve(__dirname, "index.html"),
           inject: true
       })
     ].filter(Boolean),
@@ -120,9 +120,9 @@ module.exports = function(_env, argv) {
       runtimeChunk: "single"
     },
     devServer: {
-      proxy: {
-        '/': 'http://localhost:3000',
-      },
+      // proxy: {
+      //   '/': 'http://localhost:3000',
+      // },
       compress: true,
       historyApiFallback: true,
       open: true,
