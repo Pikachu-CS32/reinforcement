@@ -17,7 +17,7 @@ dbController.addCard = (req, res, next) => {
     });
   }
 
-  const query = 'INSERT INTO cards(board_id, status, body) VALUES ($1, 0, $2) RETURNING card_id';
+  const query = 'INSERT INTO cards(board_id, status, body) VALUES ($1, 0, $2) RETURNING *';
 
   return db.query(query, [req.body.board, req.body.body])
     .then((result) => {
@@ -60,6 +60,7 @@ dbController.deleteCard = (req, res, next) => {
 };
 
 dbController.updateCard = (req, res, next) => {
+  // update function to return card
   if (req.body.card === undefined || typeof req.body.card !== 'number'
     || req.body.body === undefined
     || req.body.status === undefined || typeof req.body.status !== 'number') {
@@ -71,10 +72,13 @@ dbController.updateCard = (req, res, next) => {
     });
   }
 
-  const query = 'UPDATE cards SET body = $1, status = $2 WHERE card_id = $3';
+  const query = 'UPDATE cards SET body = $1, status = $2 WHERE card_id = $3 RETURNING *';
 
   return db.query(query, [req.body.body, req.body.status, req.body.card])
-    .then(() => next())
+    .then((response) => {
+      [res.locals.cards] = [response.rows[0]];
+      return next();
+    })
     .catch((err) => {
       next({
         log: `Error in updateCard - invalid card update request: ${err}`,
@@ -105,6 +109,32 @@ dbController.resetBoard = (req, res, next) => {
       });
     });
 };
+
+dbController.getBoard = (req, res, next) => {
+  if (req.body.board === undefined) {
+    return next({
+      log: 'Error in getBoard',
+      status: 400,
+      message: 'Error retrieving board',
+    });
+  }
+
+  const query = 'SELECT * FROM cards WHERE board_id = $1';
+
+  return db.query(query, [req.body.board])
+    .then((response) => {
+      [res.locals.cards] = [response.rows];
+      return next();
+    })
+    .catch((err) => {
+      next({
+        log: `Error in getBoard - invalid board retrieval request: ${err}`,
+        status: 400,
+        message: 'Error retrieving board - invalid request',
+      });
+    });
+};
+
 /**
  * AddCard - adds card to board
  * DeleteCard - deletes card from board

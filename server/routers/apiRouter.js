@@ -21,11 +21,15 @@ router.delete('/', dbController.deleteCard, (req, res) => {
 });
 
 router.put('/', dbController.updateCard, (req, res) => {
-  res.status(200).send();
+  res.status(200).send(res.locals.cards);
 });
 
-router.patch('/', dbController.resetBoard, (req, res) => {
-  res.status(200).send();
+router.patch('/', dbController.resetBoard, dbController.getBoard, (req, res) => {
+  res.status(200).json(res.locals.cards);
+});
+
+router.get('/', dbController.getBoard, (req, res) => {
+  res.status(200).json(res.locals.cards);
 });
 
 module.exports = router;
