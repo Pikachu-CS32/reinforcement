@@ -16,27 +16,38 @@
 }
 .card-column-header {
   font-size: xx-large;
-  text-align: center;
-  color: white;
+  justify-content: right;
+  color: black;
+  font-weight: 600;
+  border-style: outset;
+  border-color: orange;
+  border-width: 5px;
+  border-radius: 5%;
+  background-color: white;
+  padding: 10px;
+  margin-top: 50px;
 }
 .card-container {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  align-items: center;
+  align-items: right;
+  text-align: center;
 }
 button {
   padding: 5px;
   margin: 10px;
   float: right;
+  background:rgb(247, 247, 200);
+  border-style: none;
 }
 
 body {
   margin: 20px auto;
   font-family: 'Lato';
   /* background:#666; */
-  background-image: url("https://cdn.wallpapersafari.com/83/99/wcyVBR.png");
-  background-size: 100% 100%;
+  background-image: url("https://cdn.wallpapersafari.com/98/32/DiOBz1.jpg");
+  background-size: cover;
   background-repeat: no-repeat;
   color:#fff;
 }
@@ -70,6 +81,17 @@ ul{
   padding:1em;
   box-shadow: 5px 5px 7px rgba(33,33,33,.7);
   transition: transform .15s linear;
+}
+textarea {
+  text-decoration:none;
+  color:#000;
+  background:rgb(251, 251, 151);
+  padding:1em;
+  border: none;
+  font-family: 'Reenie Beanie';
+  font-size: large;
+  max-width: 10em;
+  height: max-content;
 }
 .card {
   margin:1em;

@@ -36,9 +36,9 @@ dbController.addCard = (req, res, next) => {
 };
 
 // Middleware function to delete card
-dbController.deleteCard = (req, res, next) => {
-  if (req.body.card === undefined || typeof req.body.card !== 'number') {
-    console.log('Body output', req.body);
+dbController.deleteCard = (req, res, next) => { 
+  if (req.body === undefined || typeof req.body !== 'number') {
+    console.log('Body output', req.body, req);
     return next({
       log: 'Error in deleteCard - incorrect body request',
       status: 400,

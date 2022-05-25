@@ -49,8 +49,9 @@ class Board extends Component {
         for (let i = 0; i < cards.length; i++) {
           const child = {};
           child.type = 'draggable';
-          child.id = cards[i].id;
-          child.props = { className: 'card' };
+          child.id = cards[i].card_id;
+          console.log(child.id);
+          child.props = { className: 'card'};
           child.data = cards[i].body;
           columns[cards[i].status].children.push(child);
         }
@@ -58,6 +59,22 @@ class Board extends Component {
           return { scene: { children: columns }}
         });
       });
+  }
+
+  deleteCard(target) {
+    fetch('/api', {
+      method: 'DELETE',
+      body: JSON.stringify({
+        card: Number(target.parentElement.id),
+      })
+    })
+      // .then(data => data.json())
+      // .then(data => console.log(data));
+  }
+
+  editText(e) {
+    
+
   }
 
   render() {
@@ -104,9 +121,10 @@ class Board extends Component {
                   >
                     {column.children.map((card) => {
                       return (
-                        <Draggable key={card.id}>
-                          <div {...card.props}>
-                            <p>{card.data}</p>
+                        <Draggable key={card.id} >
+                          <div {...card.props} id={card.id}>
+                            <textarea type='text' placeholder={card.data} rows='5' cols='15'></textarea>
+                            <button onClick={(e => this.deleteCard(e.target))}>delete</button>
                           </div>
                         </Draggable>
                       );
