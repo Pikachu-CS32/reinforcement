@@ -1,15 +1,11 @@
+/* eslint-disable import/order */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/jsx-filename-extension */
 import styles from './app/assets/css/styles.css';
-import React from 'react'
+import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux'
-import './app/assets/css/styles.css'
-import App from './App'
-import { store } from './app/store'
+import App from './App';
 
 const container = document.getElementById('app');
-const root = createRoot(container); 
-root.render(
-    <Provider store={store}>
-        <App />
-    </Provider>
-);
+const root = createRoot(container);
+root.render(<App />);
