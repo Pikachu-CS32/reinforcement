@@ -19,12 +19,15 @@
   },
   "homepage": "https://github.com/Pikachu-CS32/reinforcement#readme",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.1",
     "@svgr/webpack": "^6.2.1",
     "css-minimizer-webpack-plugin": "^3.4.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-redux": "^8.0.2",
+    "react-smooth-dnd": "^0.11.1",
     "url-loader": "^4.1.1",
     "webpack-dev-server": "^4.7.4"
   },

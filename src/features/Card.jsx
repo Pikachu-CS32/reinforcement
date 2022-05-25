@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const Cards = (props) => {
   const cardsList = []
   for (let i = 0; i < props.cards.length; i++){

@@ -1,7 +1,9 @@
 
-.board {
+.smooth-dnd-draggable-wrapper {
+  display: grid;
   grid-template-columns: auto auto auto;
   text-align: center;
+  min-width: 150px;
 }
 
 button {
@@ -36,7 +38,7 @@ ul{
   flex-wrap: wrap;
   justify-content: center;
 }
-ul li a{
+.card {
   text-decoration:none;
   color:#000;
   background:rgb(251, 251, 151);
@@ -45,31 +47,30 @@ ul li a{
   width:10em;
   padding:1em;
   box-shadow: 5px 5px 7px rgba(33,33,33,.7);
-  transform: rotate(-6deg);
   transition: transform .15s linear;
 }
-ul li{
+.card{
   margin:1em;
 }
 
-ul li:nth-child(even) a{
+.card:nth-child(even) a{
   transform:rotate(4deg);
   position:relative;
   top:5px;
   background:#cfc;
 }
-ul li:nth-child(3n) a{
+.card:nth-child(3n) a{
   transform:rotate(-3deg);
   position:relative;
   top:-5px;
   background:#ccf;
 }
-ul li:nth-child(5n) a{
+.card:nth-child(5n) a{
   transform:rotate(5deg);
   position:relative;
   top:-10px;
 }
-ul li a:hover,ul li a:focus{
+.card:hover,.card:focus{
   box-shadow:10px 10px 7px rgba(0,0,0,.7);
   transform: scale(1.25);
   position:relative;

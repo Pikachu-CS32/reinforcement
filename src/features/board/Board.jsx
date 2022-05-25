@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { renameBoard, resetBoard, moveCardTo, moveCardFrom, addCard, modifyCard, deleteCard, initialState } from './boardSlice'
-import Cards from '../Card';
+//import Cards from '../Card';
+import Cards from '../dnd/container'
 
 function Board () {
    
@@ -24,21 +25,21 @@ function Board () {
   
   const getCards = async () => {
     try {
-      let cards = await fetch('getCards');
+      let cards = await fetch('/');
       cards = cards.json();
       const pending = [];
       const inProgress = [];
       const completed = [];
       cards.forEach(card => {
-        if (card.status === 'pending') {
+        if (card.status === '0') {
           pending.push(card)
           dispatch(moveCardTo('pending', card));
         }
-        else if (card.status == 'inProgress') {
+        else if (card.status == '1') {
           inProgress.push(card)
           dispatch(moveCardTo('inProgress', card));
         }
-        else if (card.status = 'completed') {
+        else if (card.status = '2') {
           completed.push(card)
           dispatch(moveCard('completed', card));
         }
@@ -50,43 +51,70 @@ function Board () {
   }
 
   const addCard = async () => {
-    const body = {};
-    body.boardId = board.boardId;
-    body.userId = board.userId;
-    body.text = '';
-    let card = await fetch('addCard', {method: 'POST', body: body});
+    try {
+      const body = {};
+      body.board = board.boardId;
+      body.user = board.userId;
+      body.body = '';
+      let card = await fetch('/', {method: 'POST', body: body});
+      dispatch(moveCardTo('pending', card));
+    }
+    catch (err) {
 
+    }
+    
   }
 
+  const modifyCard = async () => {
+    try {
+      const body = {}
+      body.board = board.boardId;
+      body.user = board.userId;
+      body.body = cards.cardBody;
+    }
+    catch {
+
+    }
+  }
   return (
-    <div>
-      <div className='board' id='board' style={{display: "grid"}}>
-        <div className='column' id='pending'>
-          <h3>Pending</h3>
-          <Cards cards={pending} />
-          <ul>
-           <li onDoubleClick={() => addCard()}>
-            <a href="#">
-              <p >New</p>
-              <p>add text here</p>
-              </a>
-           </li>
-          </ul>
-        </div>
-        <div className='column' id='inProgress'>
-          <h3>In Progress</h3>
-          <Cards cards={inProgress}/>
-        </div>
-        <div className='column' id='completed'>
-          <h3>Completed</h3>
-          <Cards cards={completed} />
-        </div>
-      </div>
-      <div>
-        <button onClick={() => resetBoard()} >Reset Board</button>
-      </div>
-    </div>
+    <Cards />
   )
+
+  // return (
+  //   <div>
+  //     <div className='board' id='board' style={{display: "grid"}}>
+  //       <div className='column' id='pending'>
+  //         <h3>Pending</h3>
+  //         <Cards cards={pending} />
+  //         <ul>
+  //         <li >
+  //           <a href="#">
+  //             <p >Existing</p>
+  //             <p>whatever</p>
+  //             </a>
+  //          </li>
+  //          <li onDoubleClick={() => addCard()}>
+  //           <a href="#">
+  //             <p >New</p>
+  //             <p>add text here</p>
+  //             </a>
+  //          </li>
+  //         </ul>
+  //       </div>
+  //       <div className='column' id='inProgress'>
+  //         <h3>In Progress</h3>
+  //         <Cards cards={inProgress}/>
+  //       </div>
+  //       <div className='column' id='completed'>
+  //         <h3>Completed</h3>
+  //         <Cards cards={completed} />
+  //       </div>
+  //     </div>
+  //     <div>
+  //       <button onClick={() => resetBoard()} >Reset Board</button>
+  //     </div>
+  //   </div>
+  // )
 }
 
 
