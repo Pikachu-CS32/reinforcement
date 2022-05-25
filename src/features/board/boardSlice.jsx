@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
 
 export const initialState = {
   userId: '1',
@@ -7,13 +7,13 @@ export const initialState = {
   board: {
     pending: [],
     inProgress: [],
-    completed: []
+    completed: [],
   },
   cards: {
     cardId: 0,
-    cardBody: ''    
-  }
-}
+    cardBody: '',
+  },
+};
 
 export const boardSlice = createSlice({
   name: 'board',
@@ -24,23 +24,22 @@ export const boardSlice = createSlice({
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based off those changes
-      state.value += 1
     },
     resetBoard: (state, param) => {
       const { payload } = param;
       state.board = [...state.board, payload];
     },
-    moveCardTo: (state, toColumn, card) => {
-      let toC = state.board[toColumn];
-      toC.push(card);
-      state.board = { state, ...toC }
+    moveCardTo: (state, params) => {
+      console.log(Object.entries(state), state.board[params.payload.toColumn], params);
+      const toC = state.board[params.payload.toColumn];
+      toC.push(params.payload.card);
+      state.board = { state, ...toC };
     },
-    moveCardFrom: ( state, fromColumn, card ) => {
-      let frC = state.board[fromColumn];
+    moveCardFrom: (state, params) => {
+      const frC = state.board[fromColumn];
       const index = frC.indexOf(card);
       delete frC[index];
-      state.board = { state, ...frC }
-
+      state.board = { state, ...frC };
     },
     addCard: (state) => {
 
@@ -50,11 +49,13 @@ export const boardSlice = createSlice({
     },
     deleteCard: (state) => {
 
-    }
+    },
   },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const { renameBoard, resetBoard, moveCardTo, moveCardFrom, addCard, modifyCard, deleteCard } = boardSlice.actions
+export const {
+  renameBoard, resetBoard, moveCardTo, moveCardFrom, addCard, modifyCard, deleteCard,
+} = boardSlice.actions;
 
-export default boardSlice.reducer
+export default boardSlice.reducer;

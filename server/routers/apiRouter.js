@@ -28,7 +28,7 @@ router.patch('/', dbController.resetBoard, dbController.getBoard, (req, res) => 
   res.status(200).json(res.locals.cards);
 });
 
-router.get('/', dbController.getBoard, (req, res) => {
+router.get('/:id', dbController.getBoard, (req, res) => {
   res.status(200).json(res.locals.cards);
 });
 
