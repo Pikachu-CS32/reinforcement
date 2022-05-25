@@ -111,17 +111,17 @@ dbController.resetBoard = (req, res, next) => {
 };
 
 dbController.getBoard = (req, res, next) => {
-  if (req.body.board === undefined) {
+  if (req.params === undefined) {
     return next({
       log: 'Error in getBoard',
       status: 400,
       message: 'Error retrieving board',
     });
   }
-
+  const { id } = req.params;
+  console.log(id);
   const query = 'SELECT * FROM cards WHERE board_id = $1';
-
-  return db.query(query, [req.body.board])
+  return db.query(query, [id])
     .then((response) => {
       [res.locals.cards] = [response.rows];
       return next();
