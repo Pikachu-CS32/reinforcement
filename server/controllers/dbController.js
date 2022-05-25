@@ -37,8 +37,9 @@ dbController.addCard = (req, res, next) => {
 
 // Middleware function to delete card
 dbController.deleteCard = (req, res, next) => { 
-  if (req.body === undefined || typeof req.body !== 'number') {
-    console.log('Body output', req.body, req);
+  console.log(req.body.card);
+  if (req.body.card === undefined || typeof req.body.card !== 'number') {
+    // console.log('Body output', req.body, req);
     return next({
       log: 'Error in deleteCard - incorrect body request',
       status: 400,
@@ -64,7 +65,7 @@ dbController.updateCard = (req, res, next) => {
   if (req.body.card === undefined || typeof req.body.card !== 'number'
     || req.body.body === undefined
     || req.body.status === undefined || typeof req.body.status !== 'number') {
-    console.log('Body output', req.body);
+    // console.log('Body output', req.body);
     return next({
       log: 'Error in updateCard - incorrect body request',
       status: 400,
@@ -119,7 +120,7 @@ dbController.getBoard = (req, res, next) => {
     });
   }
   const { id } = req.params;
-  console.log(id);
+  // console.log(id);
   const query = 'SELECT * FROM cards WHERE board_id = $1';
   return db.query(query, [id])
     .then((response) => {

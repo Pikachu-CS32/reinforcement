@@ -64,11 +64,13 @@ class Board extends Component {
   deleteCard(target) {
     fetch('/api', {
       method: 'DELETE',
+      headers: {
+        "Content-Type": 'application/json'
+      },
       body: JSON.stringify({
         card: Number(target.parentElement.id),
       })
     })
-      // .then(data => data.json())
       // .then(data => console.log(data));
   }
 
@@ -124,7 +126,10 @@ class Board extends Component {
                         <Draggable key={card.id} >
                           <div {...card.props} id={card.id}>
                             <textarea type='text' placeholder={card.data} rows='5' cols='15'></textarea>
-                            <button onClick={(e => this.deleteCard(e.target))}>delete</button>
+                            <button onClick={(e => {
+                              this.deleteCard(e.target);
+                              this.forceUpdate();
+                              })}>delete</button>
                           </div>
                         </Draggable>
                       );
