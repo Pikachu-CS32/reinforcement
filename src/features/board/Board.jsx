@@ -1,115 +1,155 @@
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable arrow-body-style */
+/* eslint-disable react/sort-comp */
+import React, { Component } from 'react';
+import { Container, Draggable } from 'react-smooth-dnd';
+import { applyDrag } from '../utils';
 
-import React, { useState, useEffect } from 'react';
-import Cards from '../Card';
-
-const initialState = {
-  userId: '1',
-  boardId: '1',
-  boardName: '',
-  board: {
-    pending: [],
-    inProgress: [],
-    completed: [],
-  },
-  cards: {
-    cardId: 0,
-    cardBody: '',
-  },
-};
-
-
-function Board() {
-  const [pending, setPending] = useState(initialState.board.pending);
-  const [inProgress, setInProgress] = useState(initialState.board.inProgress);
-  const [completed, setCompleted] = useState(initialState.board.completed);
-
-  // resetBoard = (e) => {
-  //   //logic to reset the cards
-  //   setPending(board.pending)
-  //   setInProgress('')
-  //   setCompleted('')
-  //   //logic to create new state with cards all in pending
-  //   //update back end card statuses
-  //   //create new state object, pass to dispatch
-  //   dispatch(resetBoard, )
-  // }
-
-  useEffect(() => {
-    const getCards = async () => {
-      try {
-        let cards = await fetch('/api/1');
-        cards = await cards.json();
-        const pendingArr = [];
-        const inProgressArr = [];
-        const completedArr = [];
-        cards.forEach((card) => {
-          console.log(card);
-          if (card.status === 0) {
-            pendingArr.push(card);
-          } else if (card.status === 1) {
-            inProgressArr.push(card);
-          } else if (card.status === 2) {
-            completedArr.push(card);
-          }
-          setPending(pendingArr);
-          setInProgress(inProgressArr);
-          setCompleted(completedArr);
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getCards();
-  }, []);
-
-  const addCard = async () => {
-    try {
-      const body = {};
-      body.board = board.boardId;
-      body.user = board.userId;
-      body.body = '';
-      let card = await fetch('/', {method: 'POST', body: body});
-    }
-    catch (err) {
-      console.log(err);
-    }
-    const body = {};
-    body.boardId = board.boardId;
-    body.userId = board.userId;
-    body.text = '';
-    const card = await fetch('/api', { method: 'POST', body });
+const columnNames = ['Pending', 'In Progress', 'Completed'];
+const columns = [];
+for (let i = 0; i < columnNames.length; i++) {
+  const column = {};
+  const props = {
+    orientation: 'vertical',
+    className: 'card-container',
   };
 
-  return (
+  column.id = `column${i}`;
+  column.type = 'container';
+  column.name = `${columnNames[i]}`;
+  column.props = props;
+  column.children = [];
+  columns.push(column);
+}
 
-    <div>
-      <div className="board" id="board" style={{ display: 'grid' }}>
-        <div className="column" id="pending">
-          <h3>Pending</h3>
-          <Cards cards={pending} />
-          <ul>
-            <li onDoubleClick={() => addCard()}>
-              <a href="#">
-                <p>New</p>
-                <p>add text here</p>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div className="column" id="inProgress">
-          <h3>In Progress</h3>
-          <Cards cards={inProgress} />
-        </div>
-        <div className="column" id="completed">
-          <h3>Completed</h3>
-          <Cards cards={completed} />
-        </div>
+class Board extends Component {
+  constructor() {
+    super();
+
+    this.onColumnDrop = this.onColumnDrop.bind(this);
+    this.onCardDrop = this.onCardDrop.bind(this);
+    this.getCardPayload = this.getCardPayload.bind(this);
+    this.state = {
+      scene: {
+        type: 'container',
+        props: {
+          orientation: 'horizontal',
+        },
+        children: columns,
+      },
+    };
+  }
+
+  componentDidMount() {
+    fetch('/api/1')
+      .then((cards) => cards.json())
+      .then((cards) => {
+        for (let i = 0; i < cards.length; i++) {
+          const child = {};
+          child.type = 'draggable';
+          child.id = cards[i].id;
+          child.props = { className: 'card' };
+          child.data = cards[i].body;
+          columns[cards[i].status].children.push(child);
+        }
+        this.setState(state => {
+          return { scene: { children: columns }}
+        });
+      });
+  }
+
+  render() {
+    return (
+      <div className="card-scene">
+        <Container
+          orientation="horizontal"
+          onDrop={this.onColumnDrop}
+          dropPlaceholder={{
+            animationDuration: 150,
+            showOnTop: true,
+            className: 'cards-drop-preview',
+          }}
+        >
+          {this.state.scene.children.map((column) => {
+            return (
+              <Draggable key={column.id}>
+                <div className={column.props.className}>
+                  <div className="card-column-header">
+                    {column.name}
+                  </div>
+                  <Container
+                    {...column.props}
+                    groupName="col"
+                    onDragStart={(e) => console.log('drag started', e)}
+                    onDragEnd={(e) => console.log('drag end', e)}
+                    onDrop={(e) => this.onCardDrop(column.id, e)}
+                    getChildPayload={(index) => this.getCardPayload(column.id, index)}
+                    dragClass="card-ghost"
+                    dropClass="card-ghost-drop"
+                    onDragEnter={() => {
+                      console.log('drag enter:', column.id);
+                    }}
+                    onDragLeave={() => {
+                      console.log('drag leave:', column.id);
+                    }}
+                    onDropReady={(p) => console.log('Drop ready: ', p)}
+                    dropPlaceholder={{
+                      animationDuration: 150,
+                      showOnTop: true,
+                      className: 'drop-preview',
+                    }}
+                    dropPlaceholderAnimationDuration={200}
+                  >
+                    {column.children.map((card) => {
+                      return (
+                        <Draggable key={card.id}>
+                          <div {...card.props}>
+                            <p>{card.data}</p>
+                          </div>
+                        </Draggable>
+                      );
+                    })}
+                  </Container>
+                </div>
+              </Draggable>
+            );
+          })}
+        </Container>
       </div>
-      <div>
-        <button onClick={() => resetBoard()}>Reset Board</button>
-      </div>
-    </div>
-  );
+    );
+  }
+
+  getCardPayload(columnId, index) {
+    return this.state.scene.children.filter((p) => p.id === columnId)[0].children[
+      index
+    ];
+  }
+
+  onColumnDrop(dropResult) {
+    const scene = { ...this.state.scene };
+    scene.children = applyDrag(scene.children, dropResult);
+    this.setState({
+      scene,
+    });
+  }
+
+  onCardDrop(columnId, dropResult) {
+    if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+      const scene = { ...this.state.scene };
+      const column = scene.children.filter((p) => p.id === columnId)[0];
+      const columnIndex = scene.children.indexOf(column);
+
+      const newColumn = { ...column };
+      newColumn.children = applyDrag(newColumn.children, dropResult);
+      scene.children.splice(columnIndex, 1, newColumn);
+
+      this.setState({
+        scene,
+      });
+    }
+  }
 }
 
 export default Board;

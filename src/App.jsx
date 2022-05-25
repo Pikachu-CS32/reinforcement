@@ -11,9 +11,6 @@ class App extends Component {
   render() {
     return (
       <div>
-        <div>
-          <h1>Reinforcement</h1>
-        </div>
         <Board />
       </div>
 
